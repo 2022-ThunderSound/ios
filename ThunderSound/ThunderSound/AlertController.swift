@@ -10,28 +10,31 @@ import WebKit
 
 class AlertController: UIViewController
 {
+    //  Variables
+    let shared = UserDefaults.standard
+    var myResponse: [String: Any] = [:]                                                                         //  Almacenamos el data de la peticion
     @IBOutlet var imgUser: UIImageView!
     @IBOutlet var nameUserLB: UILabel!
     @IBOutlet var alertView: UIView!
     @IBOutlet var publicarBT: UIButton!
     @IBAction func publicarBT(_ sender: Any)
     {
-        peticionCrearPost()
-    }
+        peticionCrearPost()                                                                                     //  Boton para lanzar la peticion, no hacemos
+    }                                                                                                           //  validacion porque el texto puede ser nil
     @IBOutlet var comentarioTF: UITextField!
     @IBOutlet var spotifyWebView: WKWebView!
     @IBAction func cerrarNewPostBT(_ sender: Any)
     {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)                                                                //  Volver a la pantalla anterior
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "FondoThunderSound.png")!)
-        self.imgUser.layer.cornerRadius = 20
-        self.imgUser.clipsToBounds = true
-        self.alertView.layer.cornerRadius = 22
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "FondoThunderSound.png")!)           //  Pasamos imagen de fondo a una vista y  
+        self.imgUser.layer.cornerRadius = 20                                                                  //  redondeamos IMG, View, TextField y BT
+        self.imgUser.clipsToBounds = true                                                                     //  tambien introducimos el codigo HTML a
+        self.alertView.layer.cornerRadius = 22                                                                //  nuestro WebView
         self.alertView.clipsToBounds = true
         self.comentarioTF.layer.cornerRadius = 15
         self.comentarioTF.clipsToBounds = true
@@ -42,10 +45,8 @@ class AlertController: UIViewController
                                        , baseURL: nil)
     }
     
-    let shared = UserDefaults.standard
-    var myResponse: [String: Any] = [:]
-    func peticionCrearPost()
-    {
+    func peticionCrearPost()                                                                        //  Peticion por POST y token por url
+    {                                                                                               //  pasamos los parametros por body
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/posts")
         guard let serviceUrl = URL(string: Url) else { return }
         var request = URLRequest(url: serviceUrl)
@@ -53,7 +54,6 @@ class AlertController: UIViewController
         request.setValue("Application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(shared.string(forKey: "token")!)", forHTTPHeaderField: "Authorization")
         let bodyData = "texto=\(comentarioTF.text!)&usuario_id=\(shared.string(forKey: "id")!)&spotify_id=\(shared.string(forKey: "songid")!)"
-        print(bodyData)
         request.httpBody = bodyData.data(using: String.Encoding.utf8);
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
@@ -67,7 +67,7 @@ class AlertController: UIViewController
                     { [self] in
                         self.myResponse = json as! [String: Any]
                         print(json)
-                        if self.myResponse["error"] as? String == nil
+                        if self.myResponse["error"] as? String == nil                               //  Si todo es correcto nos lleva a nuestro perfil
                         {
                             let storyboard = UIStoryboard(name: "Main", bundle: nil)
                             let vc = storyboard.instantiateViewController(withIdentifier: "Profileid") as! PerfilController
