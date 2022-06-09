@@ -20,7 +20,7 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
         inicioCollectionView.delegate = self
         inicioCollectionView.dataSource = self
         let shared = UserDefaults.standard
-        peticionPerfil(id: shared.integer(forKey: "id"))
+        peticionPerfil(id: shared.integer(forKey: "id"))                        // Recogemos el sharedPrefences para usar la id del usuario
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
@@ -66,7 +66,7 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
     func peticionPerfil(id: Int)
     {
         let shared = UserDefaults.standard
-        let id = shared.integer(forKey: "id")                                                                // Recogemos el sharedPrefences para usar la id del usuario
+        let id = shared.integer(forKey: "id")                                                                
         let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/siguiendo"
         guard let serviceUrl = URL(string: urlString) else { return }
         var request = URLRequest(url: serviceUrl)
