@@ -10,9 +10,13 @@ import WebKit
 
 class VerPostViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
 {
+    //  Variables
+    var post_id = 0
+    var comentarios: [[String: Any]] = []
+    var post: [String:Any] = [:]                                                                         //  Almaceno el primer data de la peticion
     @IBAction func backBT(_ sender: Any)
     {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)                                                         //  Volver a la pantalla anterior
     }
     @IBOutlet var userPostIMG: UIImageView!
     @IBOutlet var nickLB: UILabel!
@@ -22,26 +26,28 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBOutlet var comentariosTV: UITableView!
     @IBOutlet var comentarioTF: UITextField!
     @IBOutlet var comentarioBT: UIButton!
+    @IBAction func enviarComentario(_ sender: Any)
+    {
+        let texto = self.comentarioTF.text                                                              //  Comprobamos que no esta vacio y enviamos la peticion
+        self.comentarioTF.text = ""
+        if !texto!.isEmpty
+        {
+            self.peticionComentario(texto: texto!)
+        }
+    }
     
-    var post_id = 0
-    var comentarios: [[String: Any]] = []
-    var post: [String:Any] = [:]
-    
-    
-    override func viewDidLoad()
+    override func viewDidLoad()                                                                          //  Al iniciarse se ejecuta la peticion
     {
         super.viewDidLoad()
-        
         comentariosTV.delegate = self
         comentariosTV.dataSource = self
-        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))             //  Pulsar fuera quita el teclado
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
         peticionVerPost()
-        
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat             //  Tamaño fijo para cada comentario
     {
         return 125
     }
@@ -51,27 +57,27 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
         comentarios.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell        //  Colocamos los datos en las variables
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "verPostCell", for: indexPath) as! VerPostTableViewCell
         let url = NSURL(string: comentarios[indexPath.row]["foto_url"] as! String)
         let data = NSData(contentsOf: url! as URL)
         if data != nil
         {
-            cell.userIV.image = UIImage(data: data! as Data)
+            cell.userIV.image = UIImage(data: data! as Data)                                              //  transformamos la imagen a data
         }
         cell.nickLB.text = (comentarios[indexPath.row]["nick"] as! String)
         cell.comentarioLB.text = (comentarios[indexPath.row]["texto"] as! String)
         return cell
-    }//ESTO DEBERIA DE ESTAR BIEN PUESTO, PERO DEBO DE MODIFICAR LAS CLAVES CAUNDO SEPA LA PETICION
+    }
     
-    func rellenarDatos()
-    {
+    func rellenarDatos()                                                                                   //  Funcion para rellenar los datos del Post
+    {                                                                                                      //  e introducir el codigo HTML en el WebView
             self.nickLB.text = String((post["nick"] as! String))
             self.textoLB.text = String((post["texto"] as! String))
             let spotifyId = String(post["spotify_id"] as! String)
             self.spotifyWebView.loadHTMLString("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Document</title></head><body style = \"background-color:#FC9025\"><iframe style=\"border-radius:12px\" src=\"https://open.spotify.com/embed/track/\(spotifyId)?utm_source=generator\" width=\"100%\" height=\"90px\" frameBorder=\"0\" allowfullscreen=\"\" allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\"></iframe></body></html>", baseURL: nil)
-            self.comentariosTotalLB.titleLabel?.text = String(post["numero_comentarios"] as! Int)
+            self.comentariosTotalLB.titleLabel?.text = String(post["numero_comentarios"] as! Int)         //  Otra manera de poner los comentarios totales al Button
             let url = NSURL(string: post["foto_url"] as! String)
             let data = NSData(contentsOf: url! as URL)
             if data != nil
@@ -80,7 +86,7 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
             }
     }
 
-    func peticionVerPost()
+    func peticionVerPost()                                                                                 //  Peticion por GET con token por url
     {
         let shared = UserDefaults.standard
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/posts/\(post_id)/comentarios?mi_id=\(shared.string(forKey: "id")!)")
@@ -88,7 +94,6 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
         var request = URLRequest(url: serviceUrl)
         request.httpMethod = "GET"
         request.setValue("Bearer \(shared.string(forKey: "token")!)", forHTTPHeaderField: "Authorization")
-      
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if let response = response{print(response)}
@@ -100,10 +105,8 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
                     DispatchQueue.main.async
                     {
                         let mySearch = json as! [String: Any]
-                        print(json)
-                        
-                        if mySearch["error"] as? String == nil
-                        {
+                        if mySearch["error"] as? String == nil                                            //  Si todo va bien recogemos el data, rellenamos los  
+                        {                                                                                 //  datos y recargamos el tableView, sida error salta un Alert
                             self.post = mySearch["data"] as! [String: Any]
                             self.comentarios = self.post["comentarios"] as! [[String:Any]]
                             DispatchQueue.main.async
@@ -127,7 +130,7 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
         }.resume()
     }
     
-    func peticionComentario(texto:String)
+    func peticionComentario(texto:String)                                                               //  Peticion por POST con token por url y params por body
     {
         let shared = UserDefaults.standard
         let id = shared.integer(forKey: "id")
@@ -149,13 +152,11 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
                     DispatchQueue.main.async
                     {
                         let mySearch = json as! [String: Any]
-                        print(json)
-
                         if mySearch["error"] as? String == nil
                         {
                             DispatchQueue.main.async
                             {
-                                self.peticionVerPost()
+                                self.peticionVerPost()                                                  //  Si va bien mandamos la peticion a ver post y sube el comentario
                             }
                         } else
                         {
@@ -171,16 +172,5 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
                 }
             }
         }.resume()
-    }
-
-    @IBAction func enviarComentario(_ sender: Any)
-    {
-        let texto = self.comentarioTF.text
-        self.comentarioTF.text = ""
-
-        if !texto!.isEmpty
-        {
-            self.peticionComentario(texto: texto!)
-        }
     }
 }
