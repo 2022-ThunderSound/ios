@@ -9,13 +9,14 @@ import UIKit
 
 class SearchTableViewCell: UITableViewCell
 {
+    //  Variables
     @IBOutlet var nameLB: UILabel!
     @IBOutlet var nickLB: UILabel!
     @IBOutlet var perfilIMG: UIImageView!
     
     override func awakeFromNib()
     {
-        super.awakeFromNib()
+        super.awakeFromNib()                                        //  Redondeamos la imagen de perfil
         self.perfilIMG.layer.cornerRadius = 40
         self.perfilIMG.clipsToBounds = true
     }
