@@ -9,13 +9,14 @@ import UIKit
 
 class NotifTableViewCell: UITableViewCell
 {
+    //  Variables
     @IBOutlet var textoNotifTV: UILabel!
     @IBOutlet var iconNotifIMG: UIImageView!
     @IBOutlet var userNotifIMG: UIImageView!
     
     override func awakeFromNib()
     {
-        super.awakeFromNib()
+        super.awakeFromNib()                            //  Redondear la imagen de usuario
         self.userNotifIMG.layer.cornerRadius = 46
         self.userNotifIMG.clipsToBounds = true
     }
