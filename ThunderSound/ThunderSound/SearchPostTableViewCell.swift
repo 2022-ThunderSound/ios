@@ -10,6 +10,7 @@ import WebKit
 
 class SearchPostTableViewCell: UITableViewCell
 {
+    //  Variables
     @IBOutlet var spotifyWebView: WKWebView!
     
     override func awakeFromNib()
@@ -22,9 +23,3 @@ class SearchPostTableViewCell: UITableViewCell
         super.setSelected(selected, animated: animated)
     }
 }
-
-//
-//1 - track(Diccionario)
-//2 - track["items"] (Array con las canciones)
-//3 - items[0] (Diccionario con una canción)
-//4- cancion["id] y cancion["name]
