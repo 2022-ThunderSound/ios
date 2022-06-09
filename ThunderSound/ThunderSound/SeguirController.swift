@@ -10,9 +10,13 @@ import WebKit
 
 class SeguirController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource
 {
-    @IBAction func atrasBT(_ sender: Any)
+    //  Variables
+//    var usuario_id = 0
+    var datos1: [String: Any] = [:]                                                                       //  Almaceno el primer data de la peticion
+    var posts: [[String : Any]] = []
+    @IBAction func atrasBT(_ sender: Any)                                                                  
     {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)                                                                 // Volver a la pantalla anterior
     }
     @IBOutlet var userNameLBf: UILabel!
     @IBOutlet var profileIVf: UIImageView!
@@ -26,25 +30,24 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
 //        peticionSeguir()
     }
 
-    override func viewDidLoad()
+    override func viewDidLoad()                                                                                  //  Lanzamos la peticion al entrar en el controller
     {
         super.viewDidLoad()
         postsCV.delegate = self
-        postsCV.dataSource = self
-        self.profileIVf.layer.cornerRadius = 45
+        postsCV.dataSource = self   
+        self.profileIVf.layer.cornerRadius = 45                                                                  //  Redondear imagen de perfil
         self.profileIVf.clipsToBounds = true
         let shared = UserDefaults.standard
-        let id = shared.integer(forKey: "id")
-        peticionPerfil(id: id)
+        let id = shared.integer(forKey: "perfilBid")
+        peticionPerfil()
     }
     
-    var posts: [[String : Any]] = []
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         posts.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)                 //  AL seleccionar nos lleva al post detalle
     {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "VerPostid") as! VerPostViewController
@@ -54,28 +57,27 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-    {
+    {                                                                                                              //  Colocamos los datos en las variables
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "perfilCell", for: indexPath) as! SeguirCollectionViewCell
         let cancion: [String : Any] = posts[indexPath.row]["cancion"] as! [String : Any]
         let url = NSURL(string: cancion["url_portada"] as! String)
         let data = NSData(contentsOf: url! as URL)
         if data != nil
         {
-            cell.postIMG.image = UIImage(data: data! as Data)
+            cell.postIMG.image = UIImage(data: data! as Data)                                                       //  Transformamos la imagen a data
         }
         cell.postNameLB.text = (cancion["titulo"] as! String)
         return cell
     }
     
-    var datos1: [String: Any] = [:]
-    func peticionPerfil(id: Int)
+    func peticionPerfil()                                                                                           //  Peticion por GET y token por url
     {
         let shared = UserDefaults.standard
-        let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/canciones"
+        let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/canciones"//usuario_id
         guard let serviceUrl = URL(string: urlString) else { return }
         var request = URLRequest(url: serviceUrl)
         let token = (shared.string(forKey: "token")!)
-        print(token)
+//        request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         URLSession.shared.dataTask(with: request) { (data, response, error) in
             if error != nil
@@ -94,12 +96,12 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
                 print(json)
                 if self.datos1["error"] as? String == nil
                 {
-                    let dataG = self.datos1["data"] as! [String: Any]
-                    self.posts = dataG["posts"] as! [[String : Any]]
+                    let dataG = self.datos1["data"] as! [String: Any]                                     //  Almaceno el segundo data
+                    self.posts = dataG["posts"] as! [[String : Any]]                                      //  Almacena el tercer data (posts)
                     DispatchQueue.main.async
                     {
-                        self.rellenarDatos()
-                        self.postsCV.reloadData()
+                        self.rellenarDatos()                                                              //  Si todo va bien rellenamos los datos y 
+                        self.postsCV.reloadData()                                                         //  recargamos la tabla sino Alert de error
                     }
                 } else
                 {
@@ -114,7 +116,7 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
     
     func rellenarDatos()
     {
-        let dataG = self.datos1["data"] as! [String: Any]
+        let dataG = self.datos1["data"] as! [String: Any]                                                 //  Recogemos los datos y los introducimos en las variables
         let url = NSURL(string: dataG["foto_url"] as! String)
         let data = NSData(contentsOf: url! as URL)
         if data != nil
