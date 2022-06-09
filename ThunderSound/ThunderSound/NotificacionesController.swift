@@ -9,6 +9,9 @@ import UIKit
 
 class NotificacionesController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
+    //  Variables
+    var myNotif: [String: Any] = [:]                                                            //  Almacenamos los datos de la peticion
+    var notificaciones: [[String: Any]] = []
     @IBOutlet var notificationTV: UITableView!
     
     override func viewDidLoad()
@@ -17,32 +20,31 @@ class NotificacionesController: UIViewController, UITableViewDelegate, UITableVi
         notificationTV.delegate = self
         notificationTV.dataSource = self
         let shared = UserDefaults.standard
-        let id = shared.integer(forKey: "id")
+        let id = shared.integer(forKey: "id")                                                   //  Sacamos el shared para meter mi id a la peticion
         peticionGetNotif(id: id)
     }
 
-    var notificaciones: [[String: Any]] = []
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         notificaciones.count
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat    // Damos altura fija a la celda para que se ajusten al tamaño del diseño
     {
         return 100
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell      //  Colocamos los datos en las variables
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "notifCell", for: indexPath) as! NotifTableViewCell
         let url = NSURL(string: notificaciones[indexPath.row]["foto_emisor"] as! String)
         let data = NSData(contentsOf: url! as URL)
-        if data != nil
+        if data != nil                                                                                  //  Obtenemos la imagen de nuevo
         {
             cell.userNotifIMG.image = UIImage(data: data! as Data)
         }
         cell.textoNotifTV.text = (notificaciones[indexPath.row]["tipo"] as! String)
-        if (notificaciones[indexPath.row]["tipo"] as! String) == "COMENTARIO"
+        if (notificaciones[indexPath.row]["tipo"] as! String) == "COMENTARIO"                           //  Diferenciamos entre los dos tipos de notificaciones
         {
             cell.textoNotifTV.text = "Has recibido un comentario de \((notificaciones[indexPath.row]["nick_emisor"] as! String))."
             cell.iconNotifIMG.image = UIImage(named: "ComentarioPostIcono")
@@ -53,9 +55,8 @@ class NotificacionesController: UIViewController, UITableViewDelegate, UITableVi
         }
         return cell
     }
-    
-    var myNotif: [String: Any] = [:]
-    func peticionGetNotif(id: Int)
+
+    func peticionGetNotif(id: Int)                                                                      //  Peticion por GET, añadiendo el token por url 
     {
         let shared = UserDefaults.standard
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/notificaciones")
@@ -78,8 +79,8 @@ class NotificacionesController: UIViewController, UITableViewDelegate, UITableVi
                         self.notificaciones = dataG["data"] as! [[String : Any]]
                         DispatchQueue.main.async
                         {
-                            self.notificationTV.reloadData()
-                        }
+                            self.notificationTV.reloadData()                                            //  Si todo va bien recargamos la tabla, sino
+                        }                                                                               //  muestra un Alert
                     } else
                     {
                         let alert = UIAlertController(title: "No ha recibido ninguna notificación.", message: self.myNotif["message"] as? String, preferredStyle: .alert)
