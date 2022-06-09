@@ -9,14 +9,17 @@ import UIKit
 
 class SearchController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
+    //  Variables
+    var usuarios: [[String: Any]] = [] 
+    var mySearch: [String: Any] = [:]                                                                       //  Guardamos los datos de la peticion
     @IBOutlet var tableView: UITableView!
     @IBOutlet var searchEditBT: UIButton!
     @IBOutlet var searchTF: UITextField!
     @IBAction func searchBT(_ sender: Any)
     {
-        if searchTF.text != nil
-        {
-            peticionSearchUser(searchTF: searchTF.text!)
+        if searchTF.text != nil                                                                             //  Comprobamos que el buscador no esta vacio
+        {                                                                                                   //  para enviarlo por la peticion, si esta vacio
+            peticionSearchUser(searchTF: searchTF.text!)                                                    //  salta un Alert de error
         } else
         {
             let alert = UIAlertController(title: "Error", message: "Por favor, rellene el campo para realizar la búsqueda.", preferredStyle: .alert)
@@ -31,13 +34,13 @@ class SearchController: UIViewController, UITableViewDelegate, UITableViewDataSo
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        let path = UIBezierPath(roundedRect:searchEditBT.bounds,
+        let path = UIBezierPath(roundedRect:searchEditBT.bounds,                                        //  Con UIBezierPath estamos redondeando solo las esquinas que indicamos
                                 byRoundingCorners:[.topRight, .bottomRight],
                                 cornerRadii: CGSize(width: 6, height:  6))
         let maskLayer = CAShapeLayer()
         maskLayer.path = path.cgPath
         searchEditBT.layer.mask = maskLayer
-        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))            //  Para que al pulsar fuera del teclado se cierre
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
@@ -47,26 +50,25 @@ class SearchController: UIViewController, UITableViewDelegate, UITableViewDataSo
         usuarios.count
     }
     
-    var usuarios: [[String: Any]] = []
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell      //  Colocamos los datos en las variables
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as! SearchTableViewCell
         let url = NSURL(string: usuarios[indexPath.row]["foto_url"] as! String)
         let data = NSData(contentsOf: url! as URL)
         if data != nil
         {
-            cell.perfilIMG.image = UIImage(data: data! as Data)
+            cell.perfilIMG.image = UIImage(data: data! as Data)                                         //  Transformamos la imagen String a data
         }
         cell.nameLB.text = (usuarios[indexPath.row]["nombre"] as! String)
         cell.nickLB.text = (usuarios[indexPath.row]["nick"] as! String)
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)                       //  Al seleccionar
     {
         let id = (usuarios[indexPath.row]["id"] as! Int)
         let shared = UserDefaults.standard
-        shared.setValue(id, forKey: "id")
+        shared.setValue(id, forKey: "perfilBid")
         let receptor_id = shared.integer(forKey: "id")
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "suPerfilid") as! SeguirController
@@ -74,8 +76,7 @@ class SearchController: UIViewController, UITableViewDelegate, UITableViewDataSo
         self.present(vc, animated: true, completion: nil)
     }
     
-    var mySearch: [String: Any] = [:]
-    func peticionSearchUser(searchTF: String)
+    func peticionSearchUser(searchTF: String)                                                           //  Peticion encontrar user mediante POST y token por url
     {
         let shared = UserDefaults.standard
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/buscar")
@@ -100,7 +101,7 @@ class SearchController: UIViewController, UITableViewDelegate, UITableViewDataSo
                         self.usuarios = self.mySearch["data"] as! [[String: Any]]
                         DispatchQueue.main.async
                         {
-                            self.tableView.reloadData()
+                            self.tableView.reloadData()                                                 //  Si todo va bien se recarga el tableView con los users
                         }
                     } else
                     {
