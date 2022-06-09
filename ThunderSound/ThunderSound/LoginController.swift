@@ -42,9 +42,6 @@ class LoginController: UIViewController
     {
         super.viewDidLoad()
         let shared = UserDefaults.standard
-//        shared.setValue("", forKey: "userTF")
-//        shared.setValue("", forKey: "passwordTF")
-//        shared.setValue("", forKey: "token")
         if let user = shared.string(forKey: "userTF")
         {
             if let pass = shared.string(forKey: "passwordTF")
@@ -93,7 +90,6 @@ class LoginController: UIViewController
                     DispatchQueue.main.async
                     { [self] in
                         self.myResponse = json as! [String: Any]
-                        print(json)
                         if self.myResponse["error"] as? String == "Unauthorized"
                         {
                             let alert = UIAlertController(title: "Error", message: myResponse["message"] as? String, preferredStyle: .alert)
@@ -103,21 +99,20 @@ class LoginController: UIViewController
                         }
                         if self.myResponse["access_token"] != nil
                         {
-                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                            let vc = storyboard.instantiateViewController(withIdentifier: "Inicioid") as! InicioController
-                            vc.modalPresentationStyle = .fullScreen
-                            self.present(vc, animated: true, completion: nil)
                             let shared = UserDefaults.standard
                             shared.setValue(userTF, forKey: "userTF")
                             shared.setValue(passwordTF, forKey: "passwordTF")
                             let id = self.myResponse["id"]
-                            let token = self.myResponse["access_token"] as! String
-                            shared.setValue(token, forKey: "token")
+                            let token = self.myResponse["access_token"]
+                            shared.set(token, forKey: "token")
                             shared.setValue(id, forKey: "id")
-                            print(token)
-                            let emisor_id = shared.integer(forKey: "id")
+                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                            let vc = storyboard.instantiateViewController(withIdentifier: "Inicioid") as! InicioController
+                            vc.modalPresentationStyle = .fullScreen
+                            self.present(vc, animated: true, completion: nil)
                         }
                     }
+                    
                 } catch
                 {
                     print(error)

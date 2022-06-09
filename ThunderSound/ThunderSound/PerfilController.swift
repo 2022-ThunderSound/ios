@@ -39,18 +39,35 @@ class PerfilController: UIViewController, UICollectionViewDelegate, UICollection
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
         postCV.dataSource = self
         postCV.delegate = self
         let shared = UserDefaults.standard
         peticionPerfil(id: shared.integer(forKey: "id"))
-        
         self.myProfileIVp.layer.cornerRadius = 45
         self.myProfileIVp.clipsToBounds = true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
+    {
+        let ancho : Int = Int(self.postCV.frame.size.width)/3
+        let alto = 155
+        let tam = CGSize(width: ancho, height: alto)
+        return tam
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         posts.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "VerPostid") as! VerPostViewController
+        vc.modalPresentationStyle = .fullScreen
+        vc.post_id = posts[indexPath.row]["id"] as! Int
+        self.present(vc, animated: true, completion: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
@@ -99,6 +116,10 @@ class PerfilController: UIViewController, UICollectionViewDelegate, UICollection
                     DispatchQueue.main.async
                     {
                         self.rellenarDatos()
+                        let nick = (dataG["nick"] as! String)
+                        shared.setValue(nick, forKey: "nick")
+                        let descripcion = (dataG["descripcion"] as! String)
+                        shared.setValue(descripcion, forKey: "descripcion")
                         self.postCV.reloadData()
                     }
                 } else
@@ -122,6 +143,7 @@ class PerfilController: UIViewController, UICollectionViewDelegate, UICollection
         {
             myProfileIVp.image = UIImage(data: data! as Data)
         }
+         
         userNameLBp.text = (dataG["nick"] as! String)
         followersLBp.text = String(dataG["numeroseguidores"] as! Int)
         followLBp.text = String(dataG["numeroseguidos"] as! Int)

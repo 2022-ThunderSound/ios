@@ -10,6 +10,10 @@ import WebKit
 
 class SeguirController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource
 {
+    @IBAction func atrasBT(_ sender: Any)
+    {
+        dismiss(animated: true, completion: nil)
+    }
     @IBOutlet var userNameLBf: UILabel!
     @IBOutlet var profileIVf: UIImageView!
     @IBOutlet var followersLBf: UILabel!
@@ -27,20 +31,31 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
         super.viewDidLoad()
         postsCV.delegate = self
         postsCV.dataSource = self
+        self.profileIVf.layer.cornerRadius = 45
+        self.profileIVf.clipsToBounds = true
         let shared = UserDefaults.standard
         let id = shared.integer(forKey: "id")
         peticionPerfil(id: id)
     }
     
-    var posts: [[String: Any]] = []
+    var posts: [[String : Any]] = []
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         posts.count
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "VerPostid") as! VerPostViewController
+        vc.modalPresentationStyle = .fullScreen
+        vc.post_id = posts[indexPath.row]["id"] as! Int
+        self.present(vc, animated: true, completion: nil)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "perfilCell", for: indexPath) as! PerfilCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "perfilCell", for: indexPath) as! SeguirCollectionViewCell
         let cancion: [String : Any] = posts[indexPath.row]["cancion"] as! [String : Any]
         let url = NSURL(string: cancion["url_portada"] as! String)
         let data = NSData(contentsOf: url! as URL)
@@ -96,6 +111,7 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
             } catch let jsonError { print(jsonError) }
         }.resume()
     }
+    
     func rellenarDatos()
     {
         let dataG = self.datos1["data"] as! [String: Any]

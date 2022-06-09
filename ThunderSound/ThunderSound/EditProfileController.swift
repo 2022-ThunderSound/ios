@@ -34,12 +34,22 @@ class EditProfileController: UIViewController, UITextFieldDelegate, UIImagePicke
     }
     @IBAction func guardarBT(_ sender: Any)
     {
+        var bodyData = ""
+        let shared = UserDefaults.standard
         let imgString = editarIMG.image?.pngData()?.base64EncodedString()
         if passTF.text == passx2TF.text || userTF.text != nil || descripcionTF.text != nil || imgString?.isEmpty == false
         {
-            let shared = UserDefaults.standard
+            
+            if userTF.text != nil
+            {
+                bodyData = "nick=\(userTF.text!)"
+            }
+            print(bodyData)
+            
             let id = shared.integer(forKey: "id")
-            peticionEditarPerfil(id: id)
+                
+                
+            peticionEditarPerfil(id: id, bodyData: bodyData)
         } else
         {
             let alert = UIAlertController(title: "Error", message: "No puedes dejar ningun campo sin rellenar", preferredStyle: .alert)
@@ -61,16 +71,25 @@ class EditProfileController: UIViewController, UITextFieldDelegate, UIImagePicke
         view.addGestureRecognizer(tap)
     }
     
+    func comprobarDatos()
+    {
+        
+    }
+    
     var myDictionary: [String: Any] = [:]
-    func peticionEditarPerfil(id: Int)
+    func peticionEditarPerfil(id: Int, bodyData: String)
     {
         let imgString = editarIMG.image?.pngData()?.base64EncodedString()
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)")
         guard let serviceUrl = URL(string: Url) else { return }
         var request = URLRequest(url: serviceUrl)
-        request.httpMethod = "PUT" //EDITAR
-        request.setValue("Application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        let bodyData = "password=\(passTF.text!)&nick=\(userTF.text!)&descripcion=\(descripcionTF.text!)&foto_url=\(String(describing: imgString))"  // NO ESTOY SEGURO DEL .text! pero creo que esta bien
+        request.addValue("Application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PUT/PATCH" //EDITAR
+
+        
+//        let bodyData = "?password=\(passTF.text!)&nick=\(userTF.text!)&descripcion=\(descripcionTF.text!)&foto_url=\(String(describing: imgString))"
+         // NO ESTOY SEGURO DEL .text! pero creo que esta bien
+        print(bodyData)
         request.httpBody = bodyData.data(using: String.Encoding.utf8);
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
@@ -87,10 +106,12 @@ class EditProfileController: UIViewController, UITextFieldDelegate, UIImagePicke
                         
                         if self.myDictionary["error"] as? String == nil
                         {
+                            
                             let storyboard = UIStoryboard(name: "Main", bundle: nil)
                             let vc = storyboard.instantiateViewController(withIdentifier: "Profileid") as! PerfilController
                             vc.modalPresentationStyle = .fullScreen
                             self.present(vc, animated: true, completion: nil)
+                            
                         } else
                         {
                             let alert = UIAlertController(title: "Error != 200", message: self.myDictionary["message"] as? String, preferredStyle: .alert)

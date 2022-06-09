@@ -55,6 +55,8 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
         cell.todoView.clipsToBounds = true
         cell.perfilIV.layer.cornerRadius = 20
         cell.perfilIV.clipsToBounds = true
+        cell.comentariosTotalesBT.addTarget(self, action: #selector(onClick(sender:)), for: .touchUpInside)
+        cell.comentariosTotalesBT.tag = posts[indexPath.row]["id"] as! Int
         return cell
     }
     
@@ -66,8 +68,7 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
         let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/siguiendo"
         guard let serviceUrl = URL(string: urlString) else { return }
         var request = URLRequest(url: serviceUrl)
-        let token = (shared.string(forKey: "token")!)
-        print(token)
+        let token = (shared.string(forKey: "token")as! String)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         URLSession.shared.dataTask(with: request) { (data, response, error) in
             if error != nil
@@ -115,5 +116,15 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
                 }
             } catch let jsonError { print(jsonError) }
         }.resume()
+    }
+    
+    @objc func onClick(sender: UIButton)
+    {
+            let id = sender.tag
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "VerPostid") as! VerPostViewController
+            vc.modalPresentationStyle = .fullScreen
+            vc.post_id = id
+            self.present(vc, animated: true, completion: nil)
     }
 }
