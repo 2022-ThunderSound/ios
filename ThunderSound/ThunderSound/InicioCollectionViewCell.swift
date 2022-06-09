@@ -10,6 +10,7 @@ import WebKit
 
 class InicioCollectionViewCell: UICollectionViewCell
 {
+    //  Variables necesarias en InicioController
     @IBOutlet var todoView: UIView!
     @IBOutlet var perfilIV: UIImageView!
     @IBOutlet var userNameLB: UILabel!
