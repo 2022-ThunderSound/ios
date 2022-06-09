@@ -9,9 +9,11 @@ import UIKit
 
 class RememberController: UIViewController
 {
+    //  Variables
+    var myResponse: [String: Any] = [:]
     @IBOutlet var emailRememberTF: UITextField!
-    @IBAction func sendEmailBT(_ sender: Any)
-    {
+    @IBAction func sendEmailBT(_ sender: Any)                                           //  Comprobamos que el campo email no este vacio,
+    {                                                                                   //  si es asi muestra un Alert de error
         if emailRememberTF.text != nil
         {
             peticionRemember(emailRememberTF: emailRememberTF.text!)
@@ -23,19 +25,17 @@ class RememberController: UIViewController
             present(alert, animated: true, completion: nil)
         }
     }
-    @IBAction func atrasBT(_ sender: Any)
+    @IBAction func atrasBT(_ sender: Any)                                               //  Boton para volver al login
     {
         dismiss(animated: true, completion: nil)
     }
     
     override func viewDidLoad()
     {
-        super.viewDidLoad()
-        
+        super.viewDidLoad()   
     }
     
-    var myResponse: [String: Any] = [:]
-    func peticionRemember(emailRememberTF: String)
+    func peticionRemember(emailRememberTF: String)                                      //  Peticion de recordar contraseña mediante POST
     {
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/email")
         guard let serviceUrl = URL(string: Url) else { return }
@@ -55,8 +55,8 @@ class RememberController: UIViewController
                     DispatchQueue.main.async
                     { [self] in
                         self.myResponse = json as! [String: Any]
-                        if self.myResponse["error"] as? String != nil
-                        {
+                        if self.myResponse["error"] as? String != nil                                          //   Muestra un alert de error y si ha ido bien
+                        {                                                                                      //   muestra un alert de confirmacion
                             let alert = UIAlertController(title: "Error", message: myResponse["message"] as? String, preferredStyle: .alert)
                             let action = UIAlertAction(title: "Entendido", style: .default, handler: nil)
                             alert.addAction(action)
