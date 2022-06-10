@@ -10,7 +10,7 @@ import UIKit
 class SearchController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
     //  Variables
-    var usuarios: [[String: Any]] = [] 
+    var usuarios: [[String: Any]] = []                                                                      //  Guardamos los usuarios
     var mySearch: [String: Any] = [:]                                                                       //  Guardamos los datos de la peticion
     @IBOutlet var tableView: UITableView!
     @IBOutlet var searchEditBT: UIButton!
@@ -64,7 +64,7 @@ class SearchController: UIViewController, UITableViewDelegate, UITableViewDataSo
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)                       //  Al seleccionar
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)                       //  Al seleccionar nos lleva al perfil de ese usuario
     {
         let id = (usuarios[indexPath.row]["id"] as! Int)
         let shared = UserDefaults.standard
