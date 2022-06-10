@@ -12,7 +12,10 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
 {
     @IBAction func atrasBT(_ sender: Any)
     {
-        dismiss(animated: true, completion: nil)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "Inicioid") as! InicioController        // Volver a la pantalla anterior
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
     }
     @IBOutlet var userNameLB: UILabel!
     @IBOutlet var profileIV: UIImageView!
@@ -47,7 +50,7 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "perfilCell", for: indexPath) as! PerfilCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "perfilCell", for: indexPath) as! SeguirCollectionViewCell
         let cancion: [String : Any] = posts[indexPath.row]["cancion"] as! [String : Any]
         let url = NSURL(string: cancion["url_portada"] as! String)
         let data = NSData(contentsOf: url! as URL)

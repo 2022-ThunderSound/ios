@@ -13,6 +13,7 @@ class VerPostTableViewCell: UITableViewCell
     @IBOutlet var userIV: UIImageView!
     @IBOutlet var nickLB: UILabel!
     @IBOutlet var comentarioLB: UILabel!
+    @IBOutlet var comentarioView: UIView!
     
     override func awakeFromNib()
     {

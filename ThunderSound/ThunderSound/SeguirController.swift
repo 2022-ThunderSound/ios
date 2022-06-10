@@ -12,12 +12,12 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
 {
     //  Variables
 //    var usuario_id = 0
-    var datos1: [String: Any] = [:]                                                                       //  Almaceno el primer data de la peticion
+    var datos1: [String: Any] = [:]                                                                           //  Almaceno el primer data de la peticion
     var posts: [[String : Any]] = []
     @IBAction func atrasBT(_ sender: Any)                                                                  
     {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "VerPostid") as! VerPostViewController        // Volver a la pantalla anterior
+        let vc = storyboard.instantiateViewController(withIdentifier: "Inicioid") as! InicioController        // Volver al inicio
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true, completion: nil)
     }
