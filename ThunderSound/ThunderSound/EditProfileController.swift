@@ -83,11 +83,10 @@ class EditProfileController: UIViewController, UITextFieldDelegate, UIImagePicke
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)")
         guard let serviceUrl = URL(string: Url) else { return }
         var request = URLRequest(url: serviceUrl)
-        request.addValue("Application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")//mirar si necesita token por url, he cambiado addValue por setValue, falta añadir como body data
         request.httpMethod = "PUT" //EDITAR
-
         
-//        let bodyData = "?password=\(passTF.text!)&nick=\(userTF.text!)&descripcion=\(descripcionTF.text!)&foto_url=\(String(describing: imgString))"
+//        let bodyData = "password=\(passTF.text!)&nick=\(userTF.text!)&descripcion=\(descripcionTF.text!)&foto_url=\(String(describing: imgString))"
          // NO ESTOY SEGURO DEL .text! pero creo que esta bien
         print(bodyData)
         request.httpBody = bodyData.data(using: String.Encoding.utf8);
