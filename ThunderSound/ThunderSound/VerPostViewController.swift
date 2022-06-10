@@ -16,7 +16,10 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
     var post: [String:Any] = [:]                                                                         //  Almaceno el primer data de la peticion
     @IBAction func backBT(_ sender: Any)
     {
-        dismiss(animated: true, completion: nil)                                                         //  Volver a la pantalla anterior
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)            //  Volver al Inicio
+        let vc = storyboard.instantiateViewController(withIdentifier: "Inicioid") as! InicioController
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
     }
     @IBOutlet var userPostIMG: UIImageView!
     @IBOutlet var nickLB: UILabel!
@@ -26,6 +29,7 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBOutlet var comentariosTV: UITableView!
     @IBOutlet var comentarioTF: UITextField!
     @IBOutlet var comentarioBT: UIButton!
+    @IBOutlet var perfilIMG: UIImageView!
     @IBAction func enviarComentario(_ sender: Any)
     {
         let texto = self.comentarioTF.text                                                              //  Comprobamos que no esta vacio y enviamos la peticion
@@ -41,6 +45,11 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
         super.viewDidLoad()
         comentariosTV.delegate = self
         comentariosTV.dataSource = self
+        userPostIMG.layer.cornerRadius = 15
+        userPostIMG.clipsToBounds = true
+        perfilIMG.layer.cornerRadius = 15
+        perfilIMG.clipsToBounds = true
+        
         spotifyWebView.scrollView.isScrollEnabled = false
         let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))             //  Pulsar fuera quita el teclado
         tap.cancelsTouchesInView = false
@@ -65,8 +74,12 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
         let data = NSData(contentsOf: url! as URL)
         if data != nil
         {
-            cell.userIV.image = UIImage(data: data! as Data)                                              //  transformamos la imagen a data
+            cell.userIV.image = UIImage(data: data! as Data)                                              //  Transformamos la imagen a data
         }
+        cell.userIV.layer.cornerRadius = 15                                                               //  Redondeamos la imagen de perfil y la View
+        cell.userIV.clipsToBounds = true
+        cell.comentarioLB.layer.cornerRadius = 15                                                               //  Redondeamos la imagen de perfil y la View
+        cell.comentarioLB.clipsToBounds = true
         cell.nickLB.text = (comentarios[indexPath.row]["nick"] as! String)
         cell.comentarioLB.text = (comentarios[indexPath.row]["texto"] as! String)
         return cell

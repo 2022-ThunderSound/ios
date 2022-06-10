@@ -49,9 +49,8 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
         cell.phraseLB.text = (posts[indexPath.row]["texto"] as! String)                     //  variable correspondiente, tambien se guarda el spotify_id
         let numComent = (posts[indexPath.row]["nunmero_comentarios"])!                      //  para colocarlo en la vista post detalle               
         cell.comentariosTotalesBT.setTitle("\(numComent)", for: .normal)                    //
-        let dataC = (posts[indexPath.row ]["cancion"] as! [String : Any])                   //
-        let songID = dataC["spotify_id"] as! String                                         //
-        // Añadimos el codigo HTML de la pagina de Spotify
+        let dataC = (posts[indexPath.row ]["cancion"] as! [String : Any])
+        let songID = dataC["spotify_id"] as! String                                                                             // Añadimos el codigo HTML de la pagina de Spotify
         cell.InicioWebView.loadHTMLString("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Document</title></head><body style = \"background-color:#FC9025\"><iframe style=\"border-radius:12px\" src=\"https://open.spotify.com/embed/track/\(songID)?utm_source=generator\" width=\"100%\" height=\"90px\" frameBorder=\"0\" allowfullscreen=\"\" allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\"></iframe></body></html>", baseURL: nil)
         cell.InicioWebView.scrollView.isScrollEnabled = false                                                                   //  Eliminar Scrollable porque lo trae fijo el codigo HTML
         cell.todoView.layer.cornerRadius = 15                                                                                   //  Redondear esquinas de la View
@@ -60,6 +59,12 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
         cell.perfilIV.clipsToBounds = true
         cell.comentariosTotalesBT.addTarget(self, action: #selector(onClick(sender:)), for: .touchUpInside)                     //  Utiliza la función onClick para ir a la pantalla PostDetalle
         cell.comentariosTotalesBT.tag = posts[indexPath.row]["id"] as! Int
+        
+        let tapOlvidar = UITapGestureRecognizer(target: self, action: #selector(self.tapRemember))          // Hacemos que se pueda hacer clic en
+        cell.userNameLB.isUserInteractionEnabled = true
+        cell.userNameLB.addGestureRecognizer(tapOlvidar)
+        
+        
         return cell
     }
     
@@ -70,7 +75,7 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
         let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/siguiendo"
         guard let serviceUrl = URL(string: urlString) else { return }
         var request = URLRequest(url: serviceUrl)
-        let token = (shared.string(forKey: "token")as! String)
+        let token = (shared.string(forKey: "token")!)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")                             //  Añadimos el token por url
         URLSession.shared.dataTask(with: request) { (data, response, error) in
             if error != nil
@@ -128,5 +133,14 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
             vc.modalPresentationStyle = .fullScreen
             vc.post_id = id
             self.present(vc, animated: true, completion: nil)
+    }
+    
+    @objc                                                                                           //  Funcion recogida de objc para enviarnos a
+    func tapRemember()                                                                              //  la pantalla de VerPOstDetalle
+    {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "suPerfilid") as! SeguirController
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
     }
 }

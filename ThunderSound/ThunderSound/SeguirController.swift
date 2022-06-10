@@ -16,7 +16,10 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
     var posts: [[String : Any]] = []
     @IBAction func atrasBT(_ sender: Any)                                                                  
     {
-        dismiss(animated: true, completion: nil)                                                                 // Volver a la pantalla anterior
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "VerPostid") as! VerPostViewController        // Volver a la pantalla anterior
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
     }
     @IBOutlet var userNameLBf: UILabel!
     @IBOutlet var profileIVf: UIImageView!

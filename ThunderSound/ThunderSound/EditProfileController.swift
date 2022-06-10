@@ -11,7 +11,13 @@ class EditProfileController: UIViewController, UITextFieldDelegate, UIImagePicke
 {
     //  Variables
     var myDictionary: [String: Any] = [:]                                                           //  Almacenamos el data de la peticion
-    @IBAction func atrasBT(_ sender: Any) {dismiss(animated: true, completion: nil)}
+    @IBAction func atrasBT(_ sender: Any)
+    {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)            //  Volver al Inicio
+        let vc = storyboard.instantiateViewController(withIdentifier: "Profileid") as! PerfilController
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
+    }
     @IBOutlet var userTF: UITextField!
     @IBOutlet var passTF: UITextField!
     @IBOutlet var passx2TF: UITextField!

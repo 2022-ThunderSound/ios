@@ -13,6 +13,13 @@ class SearchPostController: UIViewController, UITableViewDelegate, UITableViewDa
     //  Variables
     var songs: [[String: Any]] = []                                                                         //  Guardamos las canciones
     var mySearch: [String: Any] = [:]                                                                       //  Guardamos los datos de la peticion
+    @IBAction func atrasBT1(_ sender: Any)
+    {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "Inicioid") as! InicioController
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
+    }
     @IBOutlet var tableView: UITableView!
     @IBOutlet var searchTF: UITextField!
     @IBOutlet var searchBT: UIButton!
