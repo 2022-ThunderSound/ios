@@ -36,21 +36,21 @@ class EditProfileController: UIViewController, UITextFieldDelegate, UIImagePicke
     }
     @IBAction func guardarBT(_ sender: Any)                                                          //  Boton para enviar peticion de Editar Perfil
     {
-        var bodyData = ""
+        var jsonData = ""
         let shared = UserDefaults.standard
         let imgString = editarIMG.image?.pngData()?.base64EncodedString()
         if passTF.text == passx2TF.text || userTF.text != nil || descripcionTF.text != nil || imgString?.isEmpty == false
         {
-            
             if userTF.text != nil
             {
-                bodyData = "nick=\(userTF.text!)" // hay que probar a pasarlos por json en vez de body
+                let jsonData: [String: String] =
+                [
+                    "nick": "\(userTF.text!)"
+                ]
             }
-            print(bodyData)
-            
-            
+            print(jsonData)
             let id = shared.integer(forKey: "id")       
-            peticionEditarPerfil(id: id, bodyData: bodyData)
+            peticionEditarPerfil(id: id, jsonData: jsonData)
         } else
         {
             let alert = UIAlertController(title: "Error", message: "No puedes dejar ningun campo sin rellenar", preferredStyle: .alert)
@@ -77,19 +77,19 @@ class EditProfileController: UIViewController, UITextFieldDelegate, UIImagePicke
         
     }
     
-    func peticionEditarPerfil(id: Int, bodyData: String)//Aqui vendria el jsonData
+    func peticionEditarPerfil(id: Int, jsonData: String)//Aqui vendria el jsonData
     {
         let imgString = editarIMG.image?.pngData()?.base64EncodedString()
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)")
         guard let serviceUrl = URL(string: Url) else { return }
         var request = URLRequest(url: serviceUrl)
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")//mirar si necesita token por url, he cambiado addValue por setValue, falta añadir como body data
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")//he cambiado addValue por setValue, falta añadir como body data
         request.httpMethod = "PUT" //EDITAR
         
 //        let bodyData = "password=\(passTF.text!)&nick=\(userTF.text!)&descripcion=\(descripcionTF.text!)&foto_url=\(String(describing: imgString))"
          // NO ESTOY SEGURO DEL .text! pero creo que esta bien
-        print(bodyData)
-        request.httpBody = bodyData.data(using: String.Encoding.utf8);
+        print(jsonData)
+        request.httpBody = jsonData.data(using: String.Encoding.utf8);
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if let response = response{print(response)}

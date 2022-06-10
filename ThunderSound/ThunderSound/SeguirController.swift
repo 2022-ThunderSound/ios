@@ -27,7 +27,7 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
     @IBOutlet var postsCV: UICollectionView!
     @IBAction func followBTf(_ sender: Any)
     {
-//        peticionSeguir()
+        peticionSeguir()
     }
 
     override func viewDidLoad()                                                                                  //  Lanzamos la peticion al entrar en el controller
@@ -39,7 +39,8 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
         self.profileIVf.clipsToBounds = true
         let shared = UserDefaults.standard
         let id = shared.integer(forKey: "perfilBid")
-        peticionPerfil()
+        let miID = shared.integer(forKey: "id")
+        peticionPerfil(id: id, miID: miID)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
@@ -70,10 +71,10 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
         return cell
     }
     
-    func peticionPerfil()                                                                                           //  Peticion por GET y token por url
+    func peticionPerfil(id: Int, miID: Int)                                                                                           //  Peticion por GET y token por url
     {
         let shared = UserDefaults.standard
-        let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/canciones"//usuario_id
+        let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/canciones?mi_id=\(miID)"//usuario_id
         guard let serviceUrl = URL(string: urlString) else { return }
         var request = URLRequest(url: serviceUrl)
         let token = (shared.string(forKey: "token")!)
@@ -97,10 +98,22 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
                 if self.datos1["error"] as? String == nil
                 {
                     let dataG = self.datos1["data"] as! [String: Any]                                     //  Almaceno el segundo data
+                    let loSigo = dataG["loSigo"] as! Bool
+                    if loSigo == true
+                    {
+                        DispatchQueue.main.async
+                        {
+                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                            let vc = storyboard.instantiateViewController(withIdentifier: "SeguirProfileYES") as! SeguirControllerYES
+                            vc.modalPresentationStyle = .fullScreen
+                            self.present(vc, animated: true, completion: nil)
+                        }
+                    }
                     self.posts = dataG["posts"] as! [[String : Any]]                                      //  Almacena el tercer data (posts)
                     DispatchQueue.main.async
                     {
-                        self.rellenarDatos()                                                              //  Si todo va bien rellenamos los datos y 
+
+                        self.rellenarDatos()                                                              //  Si todo va bien rellenamos los datos y
                         self.postsCV.reloadData()                                                         //  recargamos la tabla sino Alert de error
                     }
                 } else
@@ -130,44 +143,52 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
         descriptionLBf.text = String(dataG["descripcion"] as! String)
     }
     
-//    func peticionSeguir()
-//    {
-//        let dataG = self.datos1["data"] as! [String: Any]
-//
-//        let shared = UserDefaults.standard
-//        let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/siguiendo")
-//        guard let serviceUrl = URL(string: Url) else { return }
-//        var request = URLRequest(url: serviceUrl)
-//        request.httpMethod = "POST"
-//        request.setValue("Application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-//        let bodyData = "emisor_id=\(shared.integer(forKey: "id"))&receptor_id=\(dataG["id"])"
-//        request.httpBody = bodyData.data(using: String.Encoding.utf8);
-//        let session = URLSession.shared
-//        session.dataTask(with: request) { (data, response, error) in
-//            if let response = response{print(response)}
-//            if let data = data
-//            {
-//                do
-//                {
-//                    let json = try JSONSerialization.jsonObject(with: data, options: [])
-//                    DispatchQueue.main.async
-//                    { [self] in
-//                        self.posts = json as! [[String : Any]]
-//                        print(json)
-//                        if self.posts["error"] != nil
-//                        {
-//                            //esto seria para ir a la pantalla de que ahora si le sigo
-//                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//                            let vc = storyboard.instantiateViewController(withIdentifier: "SeguirProfileYES") as! SeguirControllerYES
-//                            vc.modalPresentationStyle = .fullScreen
-//                            self.present(vc, animated: true, completion: nil)
-//                        }
-//                    }
-//                } catch
-//                {
-//                    print(error)
-//                }
-//            }
-//        }.resume()
-//    }
+    func peticionSeguir()
+    {
+        let shared = UserDefaults.standard
+        let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/siguiendo")
+        guard let serviceUrl = URL(string: Url) else { return }
+        var request = URLRequest(url: serviceUrl)
+        request.httpMethod = "POST"
+        request.setValue("Application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        let bodyData = "emisor_id=\(shared.integer(forKey: "id"))&receptor_id=\(shared.integer(forKey: "perfilBid"))"
+        request.setValue("Bearer \(shared.string(forKey: "token")!)", forHTTPHeaderField: "Authorization")
+        request.httpBody = bodyData.data(using: String.Encoding.utf8);
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if let response = response{print(response)}
+            if let data = data
+            {
+                do
+                {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    DispatchQueue.main.async
+                    { [self] in
+                        let myResponse = json as! [String : Any]
+                        
+                        print(json)
+                        if myResponse["error"] == nil
+                        {                                                                               //esto seria para ir a la pantalla de que ahora si le sigo
+                            DispatchQueue.main.async
+                            {
+                                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                                let vc = storyboard.instantiateViewController(withIdentifier: "SeguirProfileYES") as! SeguirControllerYES
+                                vc.modalPresentationStyle = .fullScreen
+                                self.present(vc, animated: true, completion: nil)
+                            }
+                        } else
+                        {
+                            let alert = UIAlertController(title: "No ha sido posible seguir a este perfil", message: self.datos1["message"] as? String, preferredStyle: .alert)
+                            let action = UIAlertAction(title: "Entendido", style: .default, handler: nil)
+                            alert.addAction(action)
+                            self.present(alert, animated: true)
+                        }
+                    }
+                } catch
+                {
+                    print(error)
+                }
+            }
+        }.resume()
+    }
 }

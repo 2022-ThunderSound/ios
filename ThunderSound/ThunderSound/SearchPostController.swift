@@ -45,7 +45,6 @@ class SearchPostController: UIViewController, UITableViewDelegate, UITableViewDa
         let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))        //  Para que al pulsar fuera del teclado se cierre
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
-        
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -55,22 +54,23 @@ class SearchPostController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat        //  Colocamos la altura de la celda
     {
-        return 200
+        return 120
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell      //  Colocamos los datos en las variables y guardamos el id_track
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "searchPostCell", for: indexPath) as! SearchPostTableViewCell
         let id_track = self.songs[indexPath.row]["id"]!
-        let shared = UserDefaults.standard
-        shared.setValue(id_track, forKey: "songid")
-        cell.spotifyWebView.loadHTMLString("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Document</title></head><body><iframe style=\"border-radius:12px\" src=\"https://open.spotify.com/embed/track/\( id_track)?utm_source=generator\" width=\"100%\" height=\"50%\" frameBorder=\"0\" allowfullscreen=\"\" allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\"></iframe></body></html>"
+        cell.spotifyWebView.isOpaque = false
+        cell.spotifyWebView.loadHTMLString("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Document</title></head><body style = \"background-color:transparent\"><iframe style=\"border-radius:12px\" src=\"https://open.spotify.com/embed/track/\(id_track)?utm_source=generator\" width=\"100%\" height=\"50%\" frameBorder=\"0\" allowfullscreen=\"\" allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\"></iframe></body></html>"
                                       , baseURL: nil)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)                   //  Al selecciona nos lleva a la pantalla de crear post
     {
+        let shared = UserDefaults.standard
+        shared.setValue(self.songs[indexPath.row]["id"], forKey: "songid" )
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "CreatePostid") as! AlertController
         vc.modalPresentationStyle = .fullScreen
@@ -115,4 +115,14 @@ class SearchPostController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         }.resume()
     }
+    
+//    @objc func onClick(sender: UIButton)                                                                //  Esta funcion es recogida de Objc y la usamos para
+//    {                                                                                                   //  acceder a la pantalla post detalle y usaremos el id
+//            let id = sender.tag                                                                         //  para mostrar ese post especifico
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            let vc = storyboard.instantiateViewController(withIdentifier: "VerPostid") as! VerPostViewController
+//            vc.modalPresentationStyle = .fullScreen
+//            vc.post_id = id
+//            self.present(vc, animated: true, completion: nil)
+//    }
 }

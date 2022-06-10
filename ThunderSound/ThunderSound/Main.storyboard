@@ -1881,9 +1881,9 @@
                                         </prototypes>
                                     </tableView>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Escriba su comentario..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nfk-SP-lgF">
-                                        <rect key="frame" x="17" y="365.00000000000006" width="339" height="34"/>
+                                        <rect key="frame" x="60" y="365.00000000000006" width="296" height="34"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="339" id="9K7-L5-ECi"/>
+                                            <constraint firstAttribute="width" constant="296" id="9K7-L5-ECi"/>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="257" id="tK6-7z-ge5"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -1898,13 +1898,22 @@
                                             <action selector="enviarComentario:" destination="Zsw-zC-edM" eventType="touchUpInside" id="xBl-BY-kYa"/>
                                         </connections>
                                     </button>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Hvc-Ye-2bP">
+                                        <rect key="frame" x="17" y="359.00000000000006" width="35" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="IrO-0a-0Nb"/>
+                                            <constraint firstAttribute="width" constant="35" id="q0m-hd-SPr"/>
+                                        </constraints>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.50907407535447013" green="0.25269970182411727" blue="0.075782677573215607" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstItem="zNc-hp-1Q4" firstAttribute="leading" secondItem="9CP-7y-Ypw" secondAttribute="leading" constant="8" id="3MS-nc-AyM"/>
+                                    <constraint firstAttribute="bottom" secondItem="Hvc-Ye-2bP" secondAttribute="bottom" constant="20.670000000000002" id="E4Q-bY-2sf"/>
                                     <constraint firstAttribute="bottom" secondItem="irj-Z7-1MM" secondAttribute="bottom" constant="22.000000000000057" id="Eaw-EB-Hmu"/>
                                     <constraint firstAttribute="trailing" secondItem="irj-Z7-1MM" secondAttribute="trailing" constant="19" id="PQY-4G-JvG"/>
-                                    <constraint firstItem="nfk-SP-lgF" firstAttribute="leading" secondItem="9CP-7y-Ypw" secondAttribute="leading" constant="17" id="g0n-c8-G3K"/>
+                                    <constraint firstItem="nfk-SP-lgF" firstAttribute="leading" secondItem="9CP-7y-Ypw" secondAttribute="leading" constant="60" id="g0n-c8-G3K"/>
+                                    <constraint firstItem="Hvc-Ye-2bP" firstAttribute="leading" secondItem="9CP-7y-Ypw" secondAttribute="leading" constant="17" id="hhG-KI-kk7"/>
                                     <constraint firstItem="zNc-hp-1Q4" firstAttribute="top" secondItem="9CP-7y-Ypw" secondAttribute="top" constant="8" id="m1g-A4-zfX"/>
                                     <constraint firstItem="nfk-SP-lgF" firstAttribute="top" secondItem="9CP-7y-Ypw" secondAttribute="top" constant="365" id="nVC-sW-PBc"/>
                                     <constraint firstAttribute="trailing" secondItem="zNc-hp-1Q4" secondAttribute="trailing" constant="8" id="qSp-E0-zsY"/>
@@ -2039,7 +2048,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="357" id="ffJ-ed-HjC"/>
                                 </constraints>
-                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="gxl-jP-I33">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="gxl-jP-I33">
                                     <size key="itemSize" width="124" height="156"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -2268,7 +2277,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="357" id="NA3-xX-koc"/>
                                 </constraints>
-                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="FcQ-Tk-2cF">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="FcQ-Tk-2cF">
                                     <size key="itemSize" width="124" height="156"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -2325,7 +2334,6 @@
                                     <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <action selector="followBTf:" destination="R4S-bw-kNi" eventType="touchUpInside" id="XSB-Jm-8Xl"/>
                                     <action selector="unfollowBT:" destination="R4S-bw-kNi" eventType="touchUpInside" id="Pm5-ud-DFS"/>
                                 </connections>
                             </button>
@@ -2409,18 +2417,12 @@
                     </view>
                     <connections>
                         <outlet property="descriptionLB" destination="Zul-cn-7c4" id="auP-A3-LnU"/>
-                        <outlet property="descriptionLBf" destination="Zul-cn-7c4" id="JO7-yZ-fa5"/>
                         <outlet property="followLB" destination="grP-jO-hEX" id="zfF-T7-0hW"/>
-                        <outlet property="followLBf" destination="grP-jO-hEX" id="vNs-Pc-mcf"/>
                         <outlet property="followersLB" destination="wBT-c1-e15" id="i8O-aS-ohp"/>
-                        <outlet property="followersLBf" destination="wBT-c1-e15" id="WAW-Kp-jCl"/>
                         <outlet property="postLB" destination="O7x-bU-vOv" id="hd4-PH-5ch"/>
-                        <outlet property="postLBf" destination="O7x-bU-vOv" id="kNR-Bj-7xo"/>
                         <outlet property="postsCV" destination="oGe-Au-8pr" id="3PP-yI-5Wu"/>
                         <outlet property="profileIV" destination="61u-Kb-dfj" id="zrw-g8-4Uo"/>
-                        <outlet property="profileIVf" destination="61u-Kb-dfj" id="ggs-RN-qEw"/>
                         <outlet property="userNameLB" destination="XlL-dS-R7H" id="EI9-N6-Pvr"/>
-                        <outlet property="userNameLBf" destination="XlL-dS-R7H" id="X0x-MN-nmo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cfa-kN-zbz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -2429,7 +2431,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="T2c-hs-Z9X"/>
+        <segue reference="y4H-WV-uOp"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="BuscarBTwhite" width="46.333332061767578" height="41"/>

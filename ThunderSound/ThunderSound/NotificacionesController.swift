@@ -76,11 +76,20 @@ class NotificacionesController: UIViewController, UITableViewDelegate, UITableVi
                     if self.myNotif["error"] as? String == nil
                     {
                         let dataG = self.myNotif["data"] as! [String: Any]
-                        self.notificaciones = dataG["data"] as! [[String : Any]]
-                        DispatchQueue.main.async
+                        if dataG["Error"] as? String == nil
                         {
-                            self.notificationTV.reloadData()                                            //  Si todo va bien recargamos la tabla, sino
-                        }                                                                               //  muestra un Alert
+                            self.notificaciones = dataG["data"] as! [[String : Any]]
+                            DispatchQueue.main.async
+                            {
+                                self.notificationTV.reloadData()                                            //  Si todo va bien recargamos la tabla, sino
+                            }                                                                               //  muestra un Alert
+                        } else
+                        {
+                            let alert = UIAlertController(title: "No ha recibido ninguna notificación.", message: self.myNotif["message"] as? String, preferredStyle: .alert)
+                            let action = UIAlertAction(title: "Entendido", style: .default, handler: nil)
+                            alert.addAction(action)
+                            self.present(alert, animated: true)
+                        }
                     } else
                     {
                         let alert = UIAlertController(title: "No ha recibido ninguna notificación.", message: self.myNotif["message"] as? String, preferredStyle: .alert)

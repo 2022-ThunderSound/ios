@@ -41,6 +41,7 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
         super.viewDidLoad()
         comentariosTV.delegate = self
         comentariosTV.dataSource = self
+        spotifyWebView.scrollView.isScrollEnabled = false
         let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))             //  Pulsar fuera quita el teclado
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
