@@ -10,10 +10,13 @@ import WebKit
 
 class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource
 {
+    //  Variables
+    var posts: [[String : Any]] = []                                                                          //  Almacenamos los posts
+    var datos1: [String : Any] = [:]                                                                          //  Almacenamos los datos recogidos de la aplicacion
     @IBAction func atrasBT(_ sender: Any)
     {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "Inicioid") as! InicioController        // Volver a la pantalla anterior
+        let vc = storyboard.instantiateViewController(withIdentifier: "Inicioid") as! InicioController        //  Volver a la pantalla anterior
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true, completion: nil)
     }
@@ -31,7 +34,7 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
     
     override func viewDidLoad()
     {
-        super.viewDidLoad()
+        super.viewDidLoad()                                                                                   //  Redondeamos la imagen de perfil y lanzamos la peticion
         postsCV.delegate = self
         postsCV.dataSource = self
         self.profileIV.layer.cornerRadius = 45
@@ -42,7 +45,6 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
         peticionPerfil(id: id, miID: miID)
     }
 
-    var posts: [[String : Any]] = []
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         posts.count
@@ -51,7 +53,7 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "perfilCell", for: indexPath) as! SeguirCollectionViewCell
-        let cancion: [String : Any] = posts[indexPath.row]["cancion"] as! [String : Any]
+        let cancion: [String : Any] = posts[indexPath.row]["cancion"] as! [String : Any]                     //  Colocamos los datos en las variables 
         let url = NSURL(string: cancion["url_portada"] as! String)
         let data = NSData(contentsOf: url! as URL)
         if data != nil
@@ -62,15 +64,13 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
         return cell
     }
     
-    var datos1: [String : Any] = [:]
     func peticionPerfil(id: Int, miID: Int)
-    {
+    {                                                                                                       //  Peticion por GET con token por url
         let shared = UserDefaults.standard
         let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/canciones?mi_id=\(miID)"
         guard let serviceUrl = URL(string: urlString) else { return }
         var request = URLRequest(url: serviceUrl)
         let token = (shared.string(forKey: "token")!)
-        print(token)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         URLSession.shared.dataTask(with: request) { (data, response, error) in
             if error != nil
@@ -79,24 +79,23 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
             }
             if response != nil
             {
-                print(response ?? "No se han obtenido respuesta")
+                print(response ?? "No se ha obtenido respuesta")
             }
             guard let data = data else { return }
             do
             {
                 let json = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as! [String:Any]
                 self.datos1 = json
-                print(json)
                 if self.datos1["error"] as? String == nil
-                {
-                    let dataG = self.datos1["data"] as! [String: Any]
-                    self.posts = dataG["posts"] as! [[String : Any]]
-                    DispatchQueue.main.async
+                {                                                                                           //  Si todo va bien...
+                    let dataG = self.datos1["data"] as! [String: Any]                                       //  Almacenamos el primer data
+                    self.posts = dataG["posts"] as! [[String : Any]]                                        //  Almacenamos el segundo data (pots)
+                    DispatchQueue.main.async                                                                //  rellenamos los datos y recargamos la tabla
                     {
                         self.rellenarDatos()
                         self.postsCV.reloadData()
                     }
-                } else
+                } else                                                                                      //  Sino salta un alert de error
                 {
                     let alert = UIAlertController(title: "No ha sido posible cargar el perfil", message: self.datos1["message"] as? String, preferredStyle: .alert)
                     let action = UIAlertAction(title: "Entendido", style: .default, handler: nil)
@@ -108,7 +107,7 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     func rellenarDatos()
-    {
+    {                                                                                                       //  Recogemos las variables y colocamos los datos
         let dataG = self.datos1["data"] as! [String: Any]
         let url = NSURL(string: dataG["foto_url"] as! String)
         let data = NSData(contentsOf: url! as URL)
@@ -124,7 +123,7 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     func peticionDejarSeguir()
-    {
+    {                                                                                                               //  Peticion por POST con token por url y datos por body
         let shared = UserDefaults.standard
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/dejardeseguir")
         guard let serviceUrl = URL(string: Url) else { return }
@@ -148,7 +147,7 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
                         
                         print(json)
                         if myResponse["error"] == nil
-                        {                                                                                                   //esto seria para ir a la pantalla de que ahora si le sigo
+                        {                                                                                           //  Si todo va bien nos lleva a la pantala Seguir
                             DispatchQueue.main.async
                             {
                                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -156,7 +155,7 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
                                 vc.modalPresentationStyle = .fullScreen
                                 self.present(vc, animated: true, completion: nil)
                             }
-                        } else
+                        } else                                                                                     //  Sino muestra un alert de error
                         {
                             let alert = UIAlertController(title: "No ha sido posible seguir a este perfil", message: self.datos1["message"] as? String, preferredStyle: .alert)
                             let action = UIAlertAction(title: "Entendido", style: .default, handler: nil)
@@ -170,6 +169,5 @@ class SeguirControllerYES: UIViewController, UICollectionViewDelegate, UICollect
                 }
             }
         }.resume()
-    }
-    
+    }   
 }
