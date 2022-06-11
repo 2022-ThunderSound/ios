@@ -122,14 +122,4 @@ class SearchPostController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         }.resume()
     }
-    
-//    @objc func onClick(sender: UIButton)                                                                //  Esta funcion es recogida de Objc y la usamos para
-//    {                                                                                                   //  acceder a la pantalla post detalle y usaremos el id
-//            let id = sender.tag                                                                         //  para mostrar ese post especifico
-//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//            let vc = storyboard.instantiateViewController(withIdentifier: "VerPostid") as! VerPostViewController
-//            vc.modalPresentationStyle = .fullScreen
-//            vc.post_id = id
-//            self.present(vc, animated: true, completion: nil)
-//    }
 }
