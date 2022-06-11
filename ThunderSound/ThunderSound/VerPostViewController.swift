@@ -12,11 +12,11 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
 {
     //  Variables
     var post_id = 0
-    var comentarios: [[String: Any]] = []
+    var comentarios: [[String: Any]] = []                                                                //  Almaceno los comentarios
     var post: [String:Any] = [:]                                                                         //  Almaceno el primer data de la peticion
     @IBAction func backBT(_ sender: Any)
     {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)            //  Volver al Inicio
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)                                         //  Volver al Inicio
         let vc = storyboard.instantiateViewController(withIdentifier: "Inicioid") as! InicioController
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true, completion: nil)
@@ -77,9 +77,9 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
             cell.userIV.image = UIImage(data: data! as Data)                                              //  Transformamos la imagen a data
         }
         cell.userIV.layer.cornerRadius = 20                                                               //  Redondeamos la imagen de perfil y la View
-        cell.userIV.clipsToBounds = true
-        cell.comentarioView.layer.cornerRadius = 10                                                               //  Redondeamos la imagen de perfil y la View
-        cell.nickLB.text = (comentarios[indexPath.row]["nick"] as! String)
+        cell.userIV.clipsToBounds = true                                                                  //  No colocamos clipsToBounds para que la imagen
+        cell.comentarioView.layer.cornerRadius = 10                                                       //  pueda salir del View
+        cell.nickLB.text = (comentarios[indexPath.row]["nick"] as! String)                                //  
         cell.comentarioLB.text = (comentarios[indexPath.row]["texto"] as! String)
         return cell
     }
@@ -90,14 +90,14 @@ class VerPostViewController: UIViewController, UITableViewDataSource, UITableVie
         self.textoLB.text = String((post["texto"] as! String))
         let spotifyId = String(post["spotify_id"] as! String)
         self.spotifyWebView.loadHTMLString("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Document</title></head><body style = \"background-color:#FC9025\"><iframe style=\"border-radius:12px\" src=\"https://open.spotify.com/embed/track/\(spotifyId)?utm_source=generator\" width=\"100%\" height=\"90px\" frameBorder=\"0\" allowfullscreen=\"\" allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\"></iframe></body></html>", baseURL: nil)
-        self.comentariosTotalLB.titleLabel?.text = String(post["numero_comentarios"] as! Int)         //  Otra manera de poner los comentarios totales al Button
+        self.comentariosTotalLB.titleLabel?.text = String(post["numero_comentarios"] as! Int)              //  Otra manera de poner los comentarios totales al Button
         let url = NSURL(string: post["foto_url"] as! String)
         let data = NSData(contentsOf: url! as URL)
         if data != nil
         {
-            self.userPostIMG.image = UIImage(data: data! as Data)
+            self.userPostIMG.image = UIImage(data: data! as Data)                                          //  Transformamos la imagen a data 
         }
-        self.userPostIMG.layer.cornerRadius = 20
+        self.userPostIMG.layer.cornerRadius = 20                                                           //  Redondeamos la imagen de usuario
         self.userPostIMG.clipsToBounds = true
     }
 
