@@ -11,7 +11,6 @@ import WebKit
 class SeguirController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource
 {
     //  Variables
-//    var usuario_id = 0
     var datos1: [String: Any] = [:]                                                                           //  Almaceno el primer data de la peticion
     var posts: [[String : Any]] = []
     @IBAction func atrasBT(_ sender: Any)                                                                  
@@ -77,11 +76,11 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
     func peticionPerfil(id: Int, miID: Int)                                                                                           //  Peticion por GET y token por url
     {
         let shared = UserDefaults.standard
-        let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/canciones?mi_id=\(miID)"//usuario_id
+        let urlString = "http://35.181.160.138/proyectos/thunder22/public/api/usuarios/\(id)/canciones?mi_id=\(miID)"
         guard let serviceUrl = URL(string: urlString) else { return }
         var request = URLRequest(url: serviceUrl)
         let token = (shared.string(forKey: "token")!)
-//        request.httpMethod = "GET"
+        request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         URLSession.shared.dataTask(with: request) { (data, response, error) in
             if error != nil
@@ -147,7 +146,7 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
     }
     
     func peticionSeguir()
-    {
+    {                                                                                                     //  Peticion por POST y token por url
         let shared = UserDefaults.standard
         let Url = String(format: "http://35.181.160.138/proyectos/thunder22/public/api/siguiendo")
         guard let serviceUrl = URL(string: Url) else { return }
@@ -171,9 +170,9 @@ class SeguirController: UIViewController, UICollectionViewDelegate, UICollection
                         
                         print(json)
                         if myResponse["error"] == nil
-                        {                                                                               //esto seria para ir a la pantalla de que ahora si le sigo
+                        {                                                                               //  Si todo va bien nos llevara a la pantalla de si lo sigo
                             DispatchQueue.main.async
-                            {
+                            {                                                                           //  Si algo va mal saltaria un alert de error
                                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                                 let vc = storyboard.instantiateViewController(withIdentifier: "SeguirProfileYES") as! SeguirControllerYES
                                 vc.modalPresentationStyle = .fullScreen
