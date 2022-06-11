@@ -29,7 +29,7 @@ class NotificacionesController: UIViewController, UITableViewDelegate, UITableVi
         notificaciones.count
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat    // Damos altura fija a la celda para que se ajusten al tamaño del diseño
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat    //  Damos altura fija a la celda para que se ajusten al tamaño del diseño
     {
         return 100
     }
