@@ -27,7 +27,7 @@ class LoginController: UIViewController
     }
     @IBAction func loginBT(_ sender: Any)
     {
-        if userTF.text != nil || passwordTF.text != nil                                             //  Comprobar si estan vacios los campos
+        if userTF.text != nil && passwordTF.text != nil                                             //  Comprobar si estan vacios los campos
         {                                                                                           //  de ser asi saltaria un Alert
             peticionLogin(userTF: userTF.text!, passwordTF: passwordTF.text!)                       
         } else
