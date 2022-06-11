@@ -88,10 +88,6 @@ class RegisterController: UIViewController, UITextFieldDelegate, UIImagePickerCo
                         self.myDictionary = json as! [String: Any]
                         if self.myDictionary["error"] as? String == nil                                 //  Si no recibimos ningun error...
                         {
-//                            let alert = UIAlertController(title: "LLego el momento...", message: "Registro completado con éxito", preferredStyle: .alert)
-//                            let action = UIAlertAction(title: "Entendido", style: .default, handler: nil)
-//                            alert.addAction(action)
-//                            self.present(alert, animated: true, completion: nil)
                             let storyboard = UIStoryboard(name: "Main", bundle: nil)                    //  Nos lleva a la pantalla de login 
                             let vc = storyboard.instantiateViewController(withIdentifier: "Loginid") as! LoginController
                             vc.modalPresentationStyle = .fullScreen
