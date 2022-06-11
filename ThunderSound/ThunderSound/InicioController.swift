@@ -59,12 +59,9 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
         cell.perfilIV.clipsToBounds = true
         cell.comentariosTotalesBT.addTarget(self, action: #selector(onClick(sender:)), for: .touchUpInside)                     //  Utiliza la función onClick para ir a la pantalla PostDetalle
         cell.comentariosTotalesBT.tag = posts[indexPath.row]["id"] as! Int
-        
         let tapOlvidar = UITapGestureRecognizer(target: self, action: #selector(self.tapRemember))          // Hacemos que se pueda hacer clic en
         cell.userNameLB.isUserInteractionEnabled = true
         cell.userNameLB.addGestureRecognizer(tapOlvidar)
-        
-        
         return cell
     }
     
@@ -115,7 +112,6 @@ class InicioController: UIViewController, UICollectionViewDelegate, UICollection
                     let action = UIAlertAction(title: "Entendido", style: .default, handler: nil)      //  En el caso de no seguir a nadie nos mostraria este alert 
                     alert.addAction(action)                                                            //  para informarnos que por eso esta vacía esta pantalla
                     self.present(alert, animated: true)
-                    
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let vc = storyboard.instantiateViewController(withIdentifier: "SearchUserid") as! SearchController
                     vc.modalPresentationStyle = .fullScreen
